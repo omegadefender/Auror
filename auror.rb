@@ -18,36 +18,36 @@ class StringInterpolation < String
             if char !='[' and char != ']' and counted
                 new_string.concat(char)
                 last_char = char
-                puts "1st Condition char is: #{char}"
+                #puts "1st Condition char is: #{char}\nnew_string = #{new_string}"
             #If char is [ then set counted is true, turn it to false. Other conditions to determine if it is a double [] or not
             elsif char == '[' and counted
                 counted = false
                 last_char = char
-                puts "2nd Condition char is: #{char}"
-            elsif char !='[' and char != ']' and counted == false
-                puts "Skipped"           
+               # puts "2nd Condition char is: #{char}\nnew_string = #{new_string}"
+            elsif char !='[' and char != ']' and char != ' ' and counted == false
+               # puts "3rd Condition char is: #{char}\nnew_string = #{new_string}"
+            elsif char == ' ' and counted == false
+                new_string.concat(char)
+                counted = true 
+               # puts "4th Condition char is: #{char}\nnew_string = #{new_string}"          
             elsif char == '[' and counted == false                
                 sec_square_brac = true
                 counted = true
                 last_char = char
                 new_string.concat(char)
-                puts "3rd Condition char is: #{char}"
-            elsif char != '[' and last_char == '[' and sec_square_brac
+            #    puts "5th Condition char is: #{char}\nnew_string = #{new_string}"
+            elsif char == ']' and sec_square_brac == false and counted == false
+                new_string.concat(hash[:name])
+                puts "6th Condition char is: #{char}\nnew_string = #{new_string}\n\n"
+            elsif char == ']' and sec_square_brac == true and counted == true
                 new_string.concat(char)
-                last_char = char
-                not_counted = 1
-                puts "4th Condition char is: #{char}"
-            elsif char == ']' and last_char != ']' and not_counted == 0
-                last_char = char
-                not_counted == 1
-                puts "5th Condition char is: #{char}"
-            elsif char == ']' and last_char == ']'
-                new_string.concat(char)
-                not_counted = 1
-                puts "6th Condition char is: #{char}"
+                counted = false
+                puts "7th Condition char is: #{char}\nnew_string = #{new_string}\n\n"
+            elsif char == ']' and counted == false
+                puts "8th Condition char is: #{char}\nnew_string = #{new_string}\n\n"
             else
                 new_string.concat(hash[:name]) 
-                puts "ELSE"
+                puts "ELSE Condition char is: #{char}\nnew_string = #{new_string}"
             end
         end
         self.insert(0, new_string)
