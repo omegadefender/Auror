@@ -8,27 +8,49 @@ class StringInterpolation < String
     end
 
     def interpolate string='', hash={}
+        chars_array = string.chars
         new_string = ''
         last_char = ''
-        not_counted = false
-        string.chars.each_with_index do |char, index|
-            if char == '[' and last_char == '['
-                puts "2nd Square Bracket"
-            elsif char == '[' and last_char != '[' and string.chars[index+1] != '['
-                len = index-1
-                not_counted = true
-                new_string = new_string.insert(len, last_char)
-                puts "New String: #{new_string}"
-            elsif not_counted = false
-                puts 'Skipped'
-            else                
-                new_string.insert(new_string.length, last_char)
+        counted = true
+        sec_square_brac = false
+        chars_array.each_with_index do |char, index|
+            #The first statement checks if char is any char other than [ and ], and puts char in string.
+            if char !='[' and char != ']' and counted
+                new_string.concat(char)
                 last_char = char
-                puts last_char                
+                puts "1st Condition char is: #{char}"
+            #If char is [ then set counted is true, turn it to false. Other conditions to determine if it is a double [] or not
+            elsif char == '[' and counted
+                counted = false
+                last_char = char
+                puts "2nd Condition char is: #{char}"
+            elsif char !='[' and char != ']' and counted == false
+                puts "Skipped"           
+            elsif char == '[' and counted == false                
+                sec_square_brac = true
+                counted = true
+                last_char = char
+                new_string.concat(char)
+                puts "3rd Condition char is: #{char}"
+            elsif char != '[' and last_char == '[' and sec_square_brac
+                new_string.concat(char)
+                last_char = char
+                not_counted = 1
+                puts "4th Condition char is: #{char}"
+            elsif char == ']' and last_char != ']' and not_counted == 0
+                last_char = char
+                not_counted == 1
+                puts "5th Condition char is: #{char}"
+            elsif char == ']' and last_char == ']'
+                new_string.concat(char)
+                not_counted = 1
+                puts "6th Condition char is: #{char}"
+            else
+                new_string.concat(hash[:name]) 
+                puts "ELSE"
             end
         end
-        output_string = new_string + hash[:name]
-        self.insert(0, output_string)
+        self.insert(0, new_string)
         end
 end
 
@@ -40,12 +62,12 @@ class TestStringInterpolation < MiniTest::Test
 
     def test_square_bracket
         @string.interpolate 'Hello [name]', {name: 'Jim'}
-        p "String= #{@string}"
+        puts "String= #{@string}"
         assert_equal "Hello Jim", @string
     end
 
     def test_double_square_brackets
-        @string.interpolate "Hello [name] [[author]]", {name: 'Jim'}
+        @string.interpolate 'Hello [name] [[author]]', {name: 'Jim'}
         p "String= #{@string}"
         assert_equal "Hello Jim [author]", @string
     end
